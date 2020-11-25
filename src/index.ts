@@ -1,4 +1,4 @@
-import request from 'request'
+import axios, { AxiosRequestConfig } from 'axios'
 import * as types from './types'
 
 const baselinkerClient = (options: types.Options) => {
@@ -12,33 +12,33 @@ const baselinkerClient = (options: types.Options) => {
     }
   }
 
-  const requestOptions = {
-    url: 'https://api.baselinker.com/connector.php',
+  const requestOptions: AxiosRequestConfig = {
     method: 'POST',
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-    formData: { token },
+    url: 'https://api.baselinker.com/connector.php',
   }
 
   // TODO: test if token is valid
 
   const baselinkerRequest = async (method: string, parameters = {}): Promise<any> => {
+    const data = new FormData()
+    data.append('token', token)
+    data.append('method', method)
+    data.append('parameters', JSON.stringify(parameters))
     return await new Promise((resolve, reject) => {
       const options = {
         ...requestOptions,
-        formData: {
-          ...requestOptions.formData,
-          method,
-          parameters: JSON.stringify(parameters),
-        },
+        data,
       }
-      request(options, function(err, response, body) {
-        const data = body && JSON.parse(body)
-        if (err) return reject(err)
-        else if (data && data.status === 'ERROR') return reject(data)
-        else return resolve(data)
-      })
+      axios(options)
+        .then(response => {
+          console.log(response.data)
+          const data = response.data
+          if (data && data.status === 'ERROR') return reject(data)
+          resolve(data)
+        })
+        .catch(error => {
+          reject(error)
+        })
     })
   }
 
