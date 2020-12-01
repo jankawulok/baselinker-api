@@ -19,7 +19,22 @@ export interface OrderRequest {
   status_id?: number
   filter_email?: string
 }
-
+export interface OrderProduct {
+  storage?: string
+  storage_id?: string
+  order_product_id?: string
+  product_id?: string
+  variant_id?: string
+  name?: string
+  attributes?: string
+  sku?: string
+  ean?: string
+  auction_id?: string
+  price_brutto?: number
+  tax_rate?: number
+  quantity?: number
+  weight?: number
+}
 export interface Order {
   order_id?: number
   external_order_id?: string
@@ -70,22 +85,7 @@ export interface Order {
   order_page?: string
   pick_state?: number
   pack_state?: number
-  products?: {
-    storage?: string
-    storage_id?: string
-    order_product_id?: string
-    product_id?: string
-    variant_id?: string
-    name?: string
-    attributes?: string
-    sku?: string
-    ean?: string
-    auction_id?: string
-    price_brutto?: number
-    tax_rate?: number
-    quantity?: number
-    weight?: number
-  }[]
+  products?: OrderProduct[]
 }
 
 export interface OrderFields {
